@@ -1,4 +1,7 @@
 # **Tensorflow Model to TensorRT Conversion**
+
+<br> </br>
+
 ## **Initial Order of executing the program**
 <ol>
 <li>build_imagenet_data.py</li>
@@ -16,7 +19,7 @@
     <li>Setting up python virtual environment
     </ol>
 
-
+<br> </br>
 
 ### Using Nvidia Docker image
 
@@ -31,7 +34,7 @@ nvidia-docker run --rm --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864
 
 * By running above command it will download the necessary tensorflow image if not download previously and create the docker container
 
-
+<br> </br>
 
 ### Setting up a conda environment
 
@@ -51,7 +54,7 @@ nvidia-docker run --rm --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864
 conda create -n <environment-name> --rquirements.yml
 
 ```
-
+<br> </br>
 
 ### Setting up a python environment
 
@@ -72,10 +75,12 @@ env2/bin/pip install -r requirements.txt
 
 ```
 
-
+<br> </br>
 
 
 ## **Preparing TFRecords using imagent validation dataset**
+
+<br> </br>
 
 * By using build_imagenet.py  code , can generate TFRecords of the imagnet validation dataset.
 
@@ -116,32 +121,67 @@ python build_imagenet_data.py -validation_directory <input_image_path<> -output_
 
 The tf-record file should be inside `path-of-tf-record-directory/validation-00000-of-00001`.
 
+<br> </br>
 
 
+## **Converting Tensorflow Saved model to TF-TRT**
 
-## **Converting Tensorflow Saved model to TensorRT**
-
-* By using model_conversion.py  code , can convert TensorFlow Saved model to TensorRT optimized engine.
+* By using model_conversion.py  code , can convert TensorFlow Saved model to TFTRT optimized model.
 
 ## Initial Steps
-* Step 1 - put the tensorflow saved model path in ```--input```
-* Step 2 - put the onnx model output path in ```--onnx```. 
-* Step 3 - put the opset conig version in ```--opset```
-* Step 4 - provide the batch size need for the onnx and tensorrt engine in ```--batch_size``` ( if the converted onnx and tensorrt engines need to have original batch size of the saved model leave this argument blank)
-* Step 5 - put the tensorrt engine output path in ```--tensorrt```
+* Step 1 - put the tensorflow saved model path in ```--model_path```
+* Step 2 - put the tensorrt engine output path in ```--output```
+* Step 3 - put the presicion type in ```---precision```
 
 ``` Python
 
-python model_conversion.py --input=<directory_path of the tensorflow saved model> --onnx=<output path of onnx model> --opset=<opset config version> --batch_size=<size of the batch> --tensorrt=<output path of tensorrt engine>
+python model_conversion.py --input=<directory_path of the tensorflow saved model> --output=<output path tftrt model> --presicion=<presicion value of the model> 
+
+```
+<br> </br>
+## **Converting Tensorflow Saved model TensorRT Engine**
+
+* For the TensorRT conversion, there are 2 steps need to be followed.
+
+    1. Tensorflow to ONNX
+    2. ONNX to TensorRT
+
+<br> </br>
+## ***Tensorflow to ONNX*** ##
+
+## Initial Steps
+* Step 1 - put the tensorflow saved model path in ```--saved_model```
+* Step 2 - put the onnx model output path in ```--output```. 
+* Step 3 - put the opset config version in ```--opset```
+
+#### Run the Following argument in the terminal to create ONNX model
+``` Python
+
+python -m tf2onnx.convert --saved-model tensorflow-model-path --opset 13 --output model.onnx
 
 ```
 
+<br> </br>
+## ***ONNX to TensorRT*** ##
 
+## Initial Steps
+* Step 1 - put the ONNX model path in ```--onnx```
+* Step 2 - put the tensorrt engine output path in ```--saveEngine```. 
+* Step 3 - put the  ```--fp16``` tag if the tensorrt engine to be in FP16 precision or omit the tag if the model need to be in FP32.
+* Step 4 - put the  ```--explicitBatch``` tag if need to enable explicit batch mode, allowing you to specify the batch size during inference.
+* Step 5 - put the batch size in  ```--batch```.
 
+#### Run the Following argument in the terminal to create ONNX model
+``` Python
+
+trtexec --onnx=model.onnx --saveEngine=engine.trt --fp16 --explicitBatch --batch=8
+
+```
+<br> </br>
 
 ## **Validation of Generated TensorRT engines**
 
-* By using validation.py  code , can can validate both Tensorflow and TensorRT optimized model for imagnet validation dataset.
+* By using validation.py  code , can can validate both Tensorflow, TFTRT and TensorRT optimized model for imagnet validation dataset.
 
 
 ## Initial Steps
