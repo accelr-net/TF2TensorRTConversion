@@ -7,6 +7,16 @@ import argparse
 
 
 def main(args):
+    
+    """
+    Main function for modifying the batch size of an ONNX model.
+
+    Args:
+        args (argparse.Namespace): Command-line arguments.
+
+    Returns:
+        None
+    """
 
     onnx_model = onnx.load_model(args.model_file)
 

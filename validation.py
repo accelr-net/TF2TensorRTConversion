@@ -11,12 +11,24 @@ from base.benchmark import Benchmark
 
 def main (args):
     
+    """
+    Main function for running inference for benchmark on a TensorFlow, TF-TRT or TensorRT model.
+
+    Args:
+        args (argparse.Namespace): Command-line arguments.
+
+    Returns:
+        None
+    """
+
+    # Convert batch size to an integer
     batch_size = int(args.batch_size)
+     # Default pattern for validation data
     pattern = 'validation*'
+
+    # Create an instance of the Benchmark class and generate inference results
     results = Benchmark(args.model_path, args.input, pattern, batch_size,  args.type)
     results.generate_results()
-
-
 
 
 

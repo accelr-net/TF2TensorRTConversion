@@ -6,14 +6,28 @@ import numpy as np
 import typing
 
 from dataloader.tfrecord_dataloader import TfRecorder
-#from dataloader.image_dataloader import Images
 from modelloader.tensorflow_modelloader import TensorflowInfer
 from modelloader.tensorrt_modelloader import TensorRTInfer
 from modelloader.tftrt_modelloader import TFTRTInfer
 
 class Benchmark:
 
+    """
+    A class for benchmarking inference performance and accuracy of a model on a dataset.
+    """
+
     def __init__(self, model_path: str, data_dir: str, filename_pattern: str, batch_size: int, type: str) -> None:
+
+        """
+        Initialize the Benchmark object.
+
+        Args:
+            model_path (str): The path to the pre-trained model.
+            data_dir (str): The directory containing the dataset.
+            filename_pattern (str): The pattern for data file names.
+            batch_size (int): The batch size for inference.
+            type (str): The type of the model (Tensorflow, TensorRT, or TFTRT).
+        """
 
         self.model_path = model_path
         self.data_dir = data_dir
@@ -22,6 +36,13 @@ class Benchmark:
         self.type = type
 
     def load_model(self):
+
+        """
+        Load the pre-trained model based on the specified type.
+
+        Returns:
+            model: An instance of the loaded model.
+        """
         config = {
                 "saved_model_dir": self.model_path,
                 "batch_size": self.batch_size
@@ -38,6 +59,13 @@ class Benchmark:
     
     def load_data(self):
 
+        """
+        Load the dataset for inference.
+
+        Returns:
+            data: An instance of the loaded dataset.
+        """
+
         config = {
             "data_dir": self.data_dir,
             "filename_pattern": self.filename_pattern,
@@ -49,6 +77,10 @@ class Benchmark:
         return data
 
     def generate_results(self):
+
+        """
+        Perform benchmarking of the model's inference speed and accuracy on the dataset.
+        """
 
         inference = self.load_model()
         data = self.load_data()
@@ -70,20 +102,20 @@ class Benchmark:
         start_time = time.time()
         
         for x, y in dataset:
-            yLabels = []
+            ylabels = []
             labeling = inference.infer(x)
             print("preds.shape {}".format(x.shape))
             
             
             for x in labeling: 
                 x+=1
-                yLabels.append(x)
+                ylabels.append(x)
                        
             
             y = np.squeeze(y)         
-            k = (yLabels == y)        
-            num_hits += np.sum(yLabels == y)
-            num_predict += np.shape(yLabels)[0]
+            k = (ylabels == y)        
+            num_hits += np.sum(ylabels == y)
+            num_predict += np.shape(ylabels)[0]
             
                 
         print(num_hits)
