@@ -1,13 +1,10 @@
-import os 
 import sys
 
 import onnx
 import argparse
 
 
-
 def main(args):
-    
     """
     Main function for modifying the batch size of an ONNX model.
 
@@ -33,7 +30,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-m", "--model_file", help = "The path of onnx model file ")
+    parser.add_argument("-m", "--model_file", help="The path of onnx model file ")
     parser.add_argument("-n", "--name", help="The name to save the updated onnx model")
     parser.add_argument("-b", "--batch_size", help="The batch size")
 

@@ -85,7 +85,7 @@ class ImageBatcher:
         if self.num_images < 1:
             print("Not enough images to create batches")
             sys.exit(1)
-        self.images = self.images[0 : self.num_images]
+        self.images = self.images[0: self.num_images]
 
         # Subdivide the list of images into batches
         self.num_batches = 1 + int((self.num_images - 1) / self.batch_size)
@@ -148,12 +148,12 @@ class ImageBatcher:
             # For EfficientNet V1: Padded Crop, Bicubic Resize, and [0,1] Normalization
             # Mean subtraction and Std dev scaling are applied as a pre-processing step outside the graph.
             # image = pad_crop(image)
-            image = image.resize((self.width, self.height),)
+            image = image.resize((self.width, self.height), )
             image = np.asarray(image, dtype=self.dtype)
-            #image = image.astype(np.float32)
-            #image = np.expand_dims(image, axis=0)
-            #image = image - np.asarray([123.68, 116.28, 103.53])
-            #image = image / np.asarray([58.395, 57.120, 57.375])
+            # image = image.astype(np.float32)
+            # image = np.expand_dims(image, axis=0)
+            # image = image - np.asarray([123.68, 116.28, 103.53])
+            # image = image / np.asarray([58.395, 57.120, 57.375])
             image = image / 255.0
         else:
             print("Preprocessing method {} not supported".format(self.preprocessor))

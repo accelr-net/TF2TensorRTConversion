@@ -1,17 +1,12 @@
-import typing
 import numpy as np
-import tensorflow as tf
-
 
 
 class Model:
-
     """
     Abstract base class for defining models for inference.
     """
 
     def __init__(self, saved_model_dir: str, batch_size: int) -> None:
-
         """
         Initialize the Model object.
 
@@ -23,9 +18,7 @@ class Model:
         self.saved_model_dir = saved_model_dir
         self.batch_size = batch_size
 
-    
     def input_spec(self) -> tuple:
-        
         """
         Abstract method to define the input specification for the model.
 
@@ -36,7 +29,6 @@ class Model:
         raise NotImplementedError
 
     def output_spec(self) -> tuple:
-
         """
         Abstract method to define the output specification for the model.
 
@@ -45,8 +37,7 @@ class Model:
         """
         raise NotImplementedError
 
-    def infer(self,batch: np.ndarray) -> np.ndarray:
-
+    def infer(self, batch: np.ndarray) -> np.ndarray:
         """
         Abstract method to perform inference using the model.
 

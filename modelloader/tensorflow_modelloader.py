@@ -1,19 +1,16 @@
-import sys
-import os
-import argparse
 import typing
 
 import numpy as np
 import tensorflow as tf
 
-
 from base.model import Model
+
 
 class TensorflowInfer(Model):
     """
     Class for performing inference using a TensorFlow SavedModel.
     """
-    
+
     def __init__(self, saved_model_dir: str, batch_size: int) -> None:
 
         """
@@ -95,8 +92,6 @@ class TensorflowInfer(Model):
 
         # Read and process the results
         classes = np.argmax(output, axis=1)
-        
-        
 
         return classes
 

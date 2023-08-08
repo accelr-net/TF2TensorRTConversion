@@ -1,6 +1,3 @@
-import sys
-import os
-import argparse
 import typing
 
 import numpy as np
@@ -15,11 +12,12 @@ except ModuleNotFoundError:
 
 from base.model import Model
 
+
 class TensorRTInfer(Model):
     """
     Class for performing inference using a TensorRT engine.
     """
-    
+
     def __init__(self, saved_model_dir: str, batch_size: int) -> None:
 
         """
@@ -31,7 +29,7 @@ class TensorRTInfer(Model):
         """
 
         super().__init__(saved_model_dir, batch_size)
-        
+
         # Load TRT engine
         self.logger = trt.Logger(trt.Logger.ERROR)
         with open(saved_model_dir, "rb") as f, trt.Runtime(self.logger) as runtime:
@@ -82,7 +80,7 @@ class TensorRTInfer(Model):
 
         Returns:
             tuple: A tuple containing the shape and dtype of the input.
-        """      
+        """
         return self.inputs[0]["shape"], self.inputs[0]["dtype"]
 
     def output_spec(self) -> tuple:
@@ -92,7 +90,7 @@ class TensorRTInfer(Model):
         Returns:
             tuple: A tuple containing the shape and dtype of the output.
         """
-        
+
         return self.outputs[0]["shape"], self.outputs[0]["dtype"]
 
     def infer(self, batch: np.ndarray) -> np.ndarray:
@@ -116,9 +114,8 @@ class TensorRTInfer(Model):
 
         # Process the results
         classes = np.argmax(output, axis=1)
-        scores = np.max(output, axis=1)
         return classes
-    
+
     @staticmethod
     def create_instance(config: typing.Dict[str, typing.Any]) -> object:
         """

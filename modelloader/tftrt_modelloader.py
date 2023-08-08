@@ -3,8 +3,8 @@ import typing
 import numpy as np
 import tensorflow as tf
 
-
 from base.model import Model
+
 
 class TFTRTInfer(Model):
     """
@@ -19,7 +19,7 @@ class TFTRTInfer(Model):
             saved_model_dir (str): The path to the directory containing the TF-TRT optimized model.
             batch_size (int): The batch size for inference.
         """
-         
+
         super().__init__(saved_model_dir, batch_size)
 
         # Configure GPU memory growth to avoid memory allocation issues
@@ -83,7 +83,7 @@ class TFTRTInfer(Model):
         Returns:
             np.ndarray: The inferred classes for the input batch.
         """
-         
+
         # Process I/O and execute the network
         input = {self.inputs[0]["name"]: tf.convert_to_tensor(batch)}
         output = self.pred_fn(**input)
@@ -91,12 +91,11 @@ class TFTRTInfer(Model):
 
         # Read and process the results
         classes = np.argmax(output, axis=1)
-        scores = np.max(output, axis=1)
 
         return classes
 
     @staticmethod
-    def create_instance(config: typing.Dict[str, typing.Any]) -> object:
+    def create_instance(config: typing.Dict[str, typing.Any]) -> Model:
         """
         Create an instance of the TFTRTInfer class.
 
