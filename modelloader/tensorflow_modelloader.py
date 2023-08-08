@@ -96,7 +96,7 @@ class TensorflowInfer(Model):
         return classes
 
     @staticmethod
-    def create_instance(config: typing.Dict[str, typing.Any]) -> object:
+    def create_instance(config: typing.Dict[str, typing.Any]) -> Model:
         """
         Create an instance of the TensorflowInfer class.
 

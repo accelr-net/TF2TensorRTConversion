@@ -15,7 +15,7 @@ class Benchmark:
     A class for benchmarking inference performance and accuracy of a model on a dataset.
     """
 
-    def __init__(self, model_path: str, data_dir: str, filename_pattern: str, batch_size: int, type: str) -> None:
+    def __init__(self, model_path: str, data_dir: str, filename_pattern: str, batch_size: int, model_type: str) -> None:
 
         """
         Initialize the Benchmark object.
@@ -25,54 +25,54 @@ class Benchmark:
             data_dir (str): The directory containing the dataset.
             filename_pattern (str): The pattern for data file names.
             batch_size (int): The batch size for inference.
-            type (str): The type of the model (Tensorflow, TensorRT, or TFTRT).
+            model_type (str): The type of the model (Tensorflow, TensorRT, or TFTRT).
         """
+        if not all([model_path, data_dir, filename_pattern, batch_size, model_type]):
+            raise ValueError("All initialization arguments are required.")
+
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model path '{model_path}' does not exist.")
+
+        if not os.path.isdir(data_dir):
+            raise NotADirectoryError(f"Data directory '{data_dir}' does not exist.")
+
+        if model_type not in ["Tensorflow", "TensorRT", "TFTRT"]:
+            raise ValueError("Invalid model type. Use 'Tensorflow', 'TensorRT', or 'TFTRT'.")
 
         self.model_path = model_path
         self.data_dir = data_dir
         self.filename_pattern = filename_pattern
         self.batch_size = batch_size
-        self.type = type
+        self.type = model_type
 
-    def load_model(self):
+        try:
+            config_model = {
+                "saved_model_dir": self.model_path,
+                "batch_size": self.batch_size
+            }
+            if self.type == "Tensorflow":
+                self.model = TensorflowInfer.create_instance(config_model)
+            elif self.type == "TensorRT":
+                self.model = TensorRTInfer.create_instance(config_model)
+            elif self.type == "TFTRT":
+                self.model = TFTRTInfer.create_instance(config_model)
 
-        """
-        Load the pre-trained model based on the specified type.
-
-        Returns:
-            model: An instance of the loaded model.
-        """
-        config = {
-            "saved_model_dir": self.model_path,
-            "batch_size": self.batch_size
-        }
-        if self.type == "Tensorflow":
-            model = TensorflowInfer.create_instance(config)
-        elif self.type == "TensorRT":
-            model = TensorRTInfer.create_instance(config)
-        elif self.type == "TFTRT":
-            model = TFTRTInfer.create_instance(config)
-
-        return model
-
-    def load_data(self):
+        except Exception as e:
+            print("An error occurred while creating model object:", str(e))
 
         """
         Load the dataset for inference.
-
-        Returns:
-            data: An instance of the loaded dataset.
         """
+        try:
+            config_data = {
+                "data_dir": self.data_dir,
+                "filename_pattern": self.filename_pattern,
+                "batch_size": self.batch_size
+            }
 
-        config = {
-            "data_dir": self.data_dir,
-            "filename_pattern": self.filename_pattern,
-            "batch_size": self.batch_size
-        }
-
-        data = TfRecorder.create_instance(config)
-
-        return data
+            self.data = TfRecorder.create_instance(config_data)
+        except Exception as e:
+            print("An error occurred while creating data object:", str(e))
 
     def generate_results(self):
 
@@ -80,8 +80,8 @@ class Benchmark:
         Perform benchmarking of the model's inference speed and accuracy on the dataset.
         """
 
-        inference = self.load_model()
-        data = self.load_data()
+        inference = self.model
+        data = self.data
         dataset = data.get_batch()
 
         print('Warming up for 50 batches...')

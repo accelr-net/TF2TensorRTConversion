@@ -21,18 +21,20 @@ def main(model_path: str, output: str, precision: str, batch_size: int):
     Returns:
         None
     """
-
-    # Create an instance of TFTRTBuilder and convert the model to TF-TRT  
-    tftrt_builder = TFTRTBuilder(model_path, output, precision, batch_size)
-    tftrt_builder.create_tftrt()
+    try:
+        # Create an instance of TFTRTBuilder and convert the model to TF-TRT
+        tftrt_builder = TFTRTBuilder()
+        tftrt_builder.convert_and_save_model(model_path, output, precision, batch_size)
+    except Exception as e:
+        print("An error occurred while creating the model:", str(e))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-m", "--model_path", help="The model path for tensorflow saved model ")
-    parser.add_argument("-o", "--output", help="The outpath for model")
-    parser.add_argument("-fp", "--precision", help=" The presicion for output model ")
+    parser.add_argument("-o", "--output", help="The out path for model")
+    parser.add_argument("-fp", "--precision", help=" The precision for output model ")
     parser.add_argument("-b", "--batch_size", type=int, default=1, help="The batch size for inference.")
 
     args = parser.parse_args()

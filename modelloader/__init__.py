@@ -1,2 +1,3 @@
 from modelloader.tensorflow_modelloader import TensorflowInfer
-#from modelloader.tensorrt_modelloader import TensorRTInfer
+from modelloader.tensorrt_modelloader import TensorRTInfer
+from modelloader.tftrt_modelloader import TFTRTInfer
