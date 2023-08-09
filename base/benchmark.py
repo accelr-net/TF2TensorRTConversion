@@ -27,17 +27,7 @@ class Benchmark:
             batch_size (int): The batch size for inference.
             model_type (str): The type of the model (Tensorflow, TensorRT, or TFTRT).
         """
-        if not all([model_path, data_dir, filename_pattern, batch_size, model_type]):
-            raise ValueError("All initialization arguments are required.")
-
-        if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model path '{model_path}' does not exist.")
-
-        if not os.path.isdir(data_dir):
-            raise NotADirectoryError(f"Data directory '{data_dir}' does not exist.")
-
-        if model_type not in ["Tensorflow", "TensorRT", "TFTRT"]:
-            raise ValueError("Invalid model type. Use 'Tensorflow', 'TensorRT', or 'TFTRT'.")
+        
 
         self.model_path = model_path
         self.data_dir = data_dir

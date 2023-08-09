@@ -27,6 +27,21 @@ def main(model_path: str, input_path: str, model_type: str, batch_size: int):
     # Default pattern for validation data
     pattern = 'validation*'
 
+
+
+   
+
+    if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model path '{model_path}' does not exist.")
+
+    if not os.path.isdir(input_path):
+            raise NotADirectoryError(f"Data directory '{input_path}' does not exist.")
+
+    if model_type not in ["Tensorflow", "TensorRT", "TFTRT"]:
+            raise ValueError("Invalid model type. Use 'Tensorflow', 'TensorRT', or 'TFTRT'.")
+
+  
+
     try:
         # Create an instance of the Benchmark class and generate inference results
         results = Benchmark(model_path, input_path, pattern, batch_size, model_type)

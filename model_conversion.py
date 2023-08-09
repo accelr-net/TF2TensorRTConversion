@@ -8,7 +8,7 @@ import argparse
 from modelbuilder.tftrt_builder import TFTRTBuilder
 
 
-def main(model_path: str, output: str, precision: str, batch_size: int):
+def main(model_path: str, output_path: str, precision: str, batch_size: int):
     """
     Main function for converting a TensorFlow saved model to a TensorFlow-TensorRT (TF-TRT) optimized model.
 
@@ -21,10 +21,21 @@ def main(model_path: str, output: str, precision: str, batch_size: int):
     Returns:
         None
     """
+
+    if precision not in ["FP16", "FP32"]:
+            raise ValueError("Invalid precision mode. Must be one of: FP16 or FP32")
+    
+    if not os.path.exists(model_path):
+            raise FileNotFoundError("Provided TensorFlow model path does not exist.")
+
+    if not os.path.isdir(output_path):
+            os.makedirs(output_path)
+    
+
     try:
         # Create an instance of TFTRTBuilder and convert the model to TF-TRT
         tftrt_builder = TFTRTBuilder()
-        tftrt_builder.convert_and_save_model(model_path, output, precision, batch_size)
+        tftrt_builder.convert_and_save_model(model_path, output_path, precision, batch_size)
     except Exception as e:
         print("An error occurred while creating the model:", str(e))
 
